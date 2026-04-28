@@ -1,0 +1,8 @@
+zn "%SYS"
+do ##class(Security.Users).UnExpireUserPasswords("*")
+set sc = ##class(Security.Applications).Get("/csp/user",.props)
+set props("AutheEnabled") = 96
+set sc = ##class(Security.Applications).Modify("/csp/user",.props)
+// SQL Runtime Statistics有効化
+set ^%SYS("sql","sys","rtpc","enabled") = 1
+halt

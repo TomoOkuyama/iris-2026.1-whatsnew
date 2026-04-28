@@ -1,0 +1,4 @@
+zn "USER"
+do $system.OBJ.LoadDir("/home/irisowner/src-build/","ck",,1)
+do ##class(Demo.Setup.SampleData).Setup()
+halt

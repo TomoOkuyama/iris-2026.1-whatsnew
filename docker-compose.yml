@@ -1,0 +1,96 @@
+services:
+  iris-2025:
+    build:
+      context: .
+      dockerfile: iris-2025/Dockerfile
+    container_name: iris-2025
+    ports:
+      - "11701:1972"    # SuperServer
+      - "11702:52773"   # Web (管理ポータル)
+      - "11703:52774"   # 予備
+      - "11704:53773"   # 予備
+    volumes:
+      - ./src:/home/irisowner/src
+      - ./opt/iris:/opt/iris
+    environment:
+      - ISC_DATA_DIRECTORY=/home/irisowner/irisdata
+    depends_on:
+      - postgres
+    hostname: iris-2025
+
+  iris-2026:
+    build:
+      context: .
+      dockerfile: iris-2026/Dockerfile
+    container_name: iris-2026
+    ports:
+      - "11705:1972"    # SuperServer
+      - "11706:52773"   # Web (管理ポータル)
+      - "11707:52774"   # 予備
+      - "11708:53773"   # 予備
+    volumes:
+      - ./src:/home/irisowner/src
+      - ./opt/iris:/opt/iris
+    environment:
+      - ISC_DATA_DIRECTORY=/home/irisowner/irisdata
+    depends_on:
+      - postgres
+    hostname: iris-2026
+
+  postgres:
+    image: postgres:16
+    container_name: demo-postgres
+    environment:
+      - POSTGRES_USER=demo
+      - POSTGRES_PASSWORD=demo
+      - POSTGRES_DB=demodb
+    ports:
+      - "11709:5432"    # PostgreSQL
+      - "11710:5432"    # 予備
+      - "11711:5432"    # 予備
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    hostname: postgres
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: demo-prometheus
+    ports:
+      - "11712:9090"    # Prometheus
+      - "11713:9090"    # 予備
+      - "11714:9090"    # 予備
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    hostname: prometheus
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: demo-grafana
+    ports:
+      - "11715:3000"    # Grafana
+      - "11716:3000"    # 予備
+      - "11717:3000"    # 予備
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - prometheus
+    hostname: grafana
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0
+    container_name: demo-keycloak
+    command: start-dev --import-realm --hostname-strict=false
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "11718:8080"    # Keycloak
+      - "11719:8080"    # 予備
+      - "11720:8080"    # 予備
+    volumes:
+      - ./keycloak/iris-realm.json:/opt/keycloak/data/import/iris-realm.json
+      - ./keycloak/disable-ssl.sh:/opt/keycloak/data/import/disable-ssl.sh
+    hostname: keycloak

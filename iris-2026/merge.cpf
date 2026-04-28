@@ -1,0 +1,4 @@
+[config]
+globals=0,0,2048,0,0,0
+routines=0,0,256,0,0,0
+gmheap=256000

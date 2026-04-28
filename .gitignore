@@ -1,0 +1,26 @@
+# IRIS
+*.lck
+*.gof
+*.key
+
+# Docker
+docker-data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Implementation plans
+docs/superpowers/
+
+# Generated certificates
+opt/iris/certs/
+opt/iris/sysperf-report.html
+
+# Community article drafts (not part of the repository payload)
+/community-article-iris-2026.1.md
+/community-article-iris-2026.1.html
